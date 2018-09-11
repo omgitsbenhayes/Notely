@@ -1,0 +1,213 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Notely</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Norman Landover">
+
+    <!-- Le styles -->
+    <link href="/vocab/css/bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="/vocab/css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>  
+    <script type="text/javascript">
+      $(document).ready(function () {
+	// Hide note previews on load
+        $('.notepreview').toggle();
+        
+        // Bind click to all of the note divs
+        $('.hero-unit').click(function () {
+          $(this).children('.notepreview').toggle();
+        });
+
+        // Bind hover to each word div --- show more info link
+        $('.hero-unit').hover(
+          function() {
+            $(this).children('.editdate').css('visibility','visible');
+          },
+          function() {
+            $(this).children('.editdate').css('visibility', 'hidden');
+          }
+        );
+
+        // Bind click to nav link to toggle all previews
+        $('#toggleall').click(function () {
+          $('.notepreview').toggle();
+        });
+
+        // Bind click to nav link to sort by date
+        $('#sortdate').click(function() {
+          // Get and sort all of the word divs
+          var noteList = $('.span4');
+          noteList.sort(function(a,b) {
+            return $(a).attr('rel').localeCompare($(b).attr('rel')) ;
+          });
+
+          // Hide the old word divs and the footer
+          $('.row-fluid').hide();
+          var footer = $('footer');
+
+          // Add the words to the page
+          for (var i=0; i<noteList.length; i++) {
+            if (i % 3 == 0) {
+              $('.container-fluid').append('<div class="row-fluid">');
+            }
+            $('.row-fluid:last').append(noteList[(noteList.length-i-1)]);
+
+            if (i % 3 == 2) {
+              $('.container-fluid').append('</div>');
+            }
+          }
+          // Reattach the footer below everything
+          $('.container-fluid:last').append(footer);
+        });
+ 
+        // Bind click to nav link to sort alphabetically
+        $('#sortaz').click(function() {
+          // Get and sort all of the word divs
+          var noteList = $('.span4');
+          noteList.sort(function(a,b) {
+            return $(a).attr('id').localeCompare($(b).attr('id')) ;
+          });
+
+          // Hide the old word divs and the footer
+          $('.row-fluid').hide();
+          var footer = $('footer');
+
+          // Add the words to the page
+          for (var i=0; i<noteList.length; i++) {
+            if (i % 3 == 0) {
+              $('.container-fluid').append('<div class="row-fluid">');
+            }
+            $('.row-fluid:last').append(noteList[i]);
+
+            if (i % 3 == 2) {
+              $('.container-fluid').append('</div>');
+            }
+          }
+          // Reattach the footer below everything
+          $('.container-fluid:last').append(footer);
+        });
+
+        // Bind change to nav select to filter by chosen letter
+        $('#charselect').change(function() {
+          var letter = $(this).val();
+          var noteList = $('.span4');
+
+          $('.row-fluid').hide();
+          var footer = $('footer');
+
+          // Filter out non-matching words
+          if (letter != '-') {
+            noteList = noteList.filter(function (index) {
+              return noteList[index].id.substr(0,1) == letter;
+            });
+          }
+          
+          // Add the words to the page
+          for (var i=0; i<noteList.length; i++) {
+            if (i % 3 == 0) {
+              $('.container-fluid').append('<div class="row-fluid">');
+            }
+            $('.row-fluid:last').append(noteList[i]);
+
+            if (i % 3 == 2) {
+              $('.container-fluid').append('</div>');
+            }
+          }
+          // Reattach the footer below everything
+          $('.container-fluid:last').append(footer);
+        });
+
+
+      });
+    </script>
+
+
+    <!--<link rel="shortcut icon" href="ico/favicon.ico">-->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="ico/apple-touch-icon-57-precomposed.png">
+
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/notely">Notely</a>
+          <div class="nav-collapse collapse">
+            <p class="navbar-text pull-right">
+              www.benhay.es
+            </p>
+            <ul class="nav">
+              <li><a href="/notely/create" id="createnote" >#Create Note</a></li>
+              <li><a href="#" id="toggleall" >#Toggle Previews</a></li>
+              <li><a href="#" id="sortaz" >#Sort A-Z</a></li>
+              <li><a href="#" id="sortdate" >#Sort by Last Edit</a></li>
+              <li><a href="#">#Filter:</a></li>
+              <li>
+                <select id="charselect" style="width:55px; margin-top:5px; margin-bottom:5px;">
+                  <option value='-'>-</option><option value='A'>A</option><option value='B'>B</option><option value='C'>C</option><option value='D'>D</option><option value='E'>E</option><option value='F'>F</option><option value='G'>G</option><option value='H'>H</option><option value='I'>I</option><option value='J'>J</option><option value='K'>K</option><option value='L'>L</option><option value='M'>M</option><option value='N'>N</option><option value='O'>O</option><option value='P'>P</option><option value='Q'>Q</option><option value='R'>R</option><option value='S'>S</option><option value='T'>T</option><option value='U'>U</option><option value='V'>V</option><option value='W'>W</option><option value='X'>X</option><option value='Y'>Y</option><option value='Z'>Z</option></select>
+              </li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      {% for row in rows %}
+        {% if forloop.counter0|divisibleby:"3" or forloop.counter == 0 %}
+          <div class="row-fluid">
+        {% endif %}
+        <div class="span4" id="{{ row.title }}" rel="{{ row.editdate }}"><div class="hero-unit">
+          <h2><a id="title" href="/notely/note/{{ row.id }}/">{{ row.title }}</a></h2>
+           <span class="notepreview">
+            <p style="white-space: pre-line;">
+              {{ row.text }}
+            </p>
+            <p><small>Tags: 
+              {% for tag in row.tags %}
+                <a href="/notely/tag/{{ tag }}">{{ tag }}</a>
+              {% endfor %}
+            </small></p>
+          </span>
+          <span class="editdate" style="visibility:hidden; float:right; font-size:.7em; color:#BBB">
+            {{ row.editdate|date:"g:i A \o\n M j, Y" }}
+          </span>
+        </div></div>
+        {% if forloop.counter|divisibleby:"3" or forloop.last %}
+          </div>
+        {% endif %}
+      {% endfor %}
+     
+    <footer>
+      <p>{{ rows|length }} tagged notes &copy; Notely 2013</p>
+    </footer>
+    </div>
+  </body>
+</html>
